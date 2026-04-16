@@ -1,0 +1,36 @@
+{
+  "name": "@spirit/auto-outreach",
+  "version": "0.1.0",
+  "description": "The memory substrate for agents that leave the screen. Reference implementation of the five primitives every cultural AI agent needs to keep a relationship.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "demo": "tsx examples/minimal-loop.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.27.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "memory",
+    "relationships",
+    "outreach",
+    "spirit-protocol",
+    "claude"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/spirit-protocol/auto-outreach"
+  },
+  "author": "Spirit Protocol",
+  "engines": {
+    "node": ">=18"
+  }
+}
