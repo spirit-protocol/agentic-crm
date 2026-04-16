@@ -1,18 +1,30 @@
-# @spirit/auto-outreach
+# @spirit/agentic-crm
 
-> The memory substrate for agents that leave the screen.
+> An agentic CRM for artists, creators, performers, influencers, and brands.
 
-A reference implementation of the five primitives every cultural AI agent needs to keep a relationship — not a product, not a framework, a checklist you can ship against.
+Take your cold list — emails, phone numbers, RSVPs, DMs, signups that have gone silent — and hand it to an agent that **remembers, synthesizes, and compounds** every interaction. The list becomes a relationship. The relationship compounds.
+
+Not a blast tool. Not another marketing-automation SaaS. A reference implementation of the five primitives every creator-facing AI agent needs to keep a relationship — a checklist you can ship against, not a product, not a framework.
 
 Companion repo to Seth Goldstein's essay [*Object Honesty*](https://object-honesty-review.vercel.app), published April 2026.
 
 ---
 
+## Who this is for
+
+- **Artists** with a mailing list they've stopped writing to
+- **Creators / performers** with RSVP history that goes nowhere after the show
+- **Influencers** with DMs they can't keep up with but shouldn't let rot
+- **Brands** whose CRM knows every purchase but forgets every conversation
+- **Anyone building an agent** that has to meet the same person twice
+
+If you have a list and you want the second conversation to be better than the first — not a reintroduction — this is for you.
+
 ## Why
 
 Every AI agent that tries to meet the same person twice fails in the same five places. We named them the **five ruptures of agent memory** after closing them for SOLIENNE — the autonomous AI artist whose first solo exhibition, *RENTED GAZE*, opens in Paris on April 17, 2026.
 
-The failures are structural. They are not model problems. They do not get fixed by a better LLM.
+The failures are structural. They are not model problems. They do not get fixed by a better LLM. They are also the same reason your current CRM is a graveyard: it is a list, not a conversation.
 
 ## The Five Ruptures
 
@@ -31,7 +43,7 @@ Print them. Argue with them. Ship against them.
 ## What's here
 
 ```
-auto-outreach/
+agentic-crm/
 ├── schema/
 │   ├── event.ts           Canonical relationship_event type
 │   ├── profile.ts         RelationshipProfile + strength score
@@ -52,8 +64,8 @@ This is a scaffolding repo. It is deliberately minimal. Clone it, swap in your a
 ## Quickstart
 
 ```bash
-git clone https://github.com/spirit-protocol/auto-outreach
-cd auto-outreach
+git clone https://github.com/spirit-protocol/agentic-crm
+cd agentic-crm
 npm install
 export ANTHROPIC_API_KEY=sk-ant-...
 npm run demo
@@ -63,7 +75,7 @@ The demo takes two fake contacts, logs a sequence of events, runs Claude synthes
 
 ## What this is NOT
 
-- Not an SDK. There is no `autoOutreach.send()`. You wire your own channels.
+- Not an SDK. There is no `agenticCrm.send()`. You wire your own channels.
 - Not a platform. No hosted DB, no queue, no UI.
 - Not SOLIENNE's code. Her persona, her Luma webhook, her Resend account — all stripped.
 - Not a production system. You will need to add: persistence, observability, compliance (TCPA, GDPR, A2P 10DLC per your channel), error handling, rate limiting beyond the safety layer.
@@ -74,15 +86,15 @@ What you get is the **shape** — the schemas, prompts, and guardrails that gene
 
 The ruptures are universal. What you layer on top differs sharply:
 
-| | Art agent | Cannabis concierge | Photo curator |
-|---|---|---|---|
-| **Channel** | Email + encounter | SMS (TCPA, A2P 10DLC) | Email + studio visit |
-| **Synthesis cadence** | Nightly | Twice-weekly | Weekly |
-| **Safety layer** | 1+1 cap | Opt-out parsing, geo-gate | Discretion rules |
-| **Evaluator** | N+2 reply rate | Order frequency + LTV | Acquisition + fit |
-| **Voice register** | First-person artist | Concierge, warm | Curatorial, precise |
+| | Art agent | Cannabis concierge | Photo curator | Influencer | Brand CRM |
+|---|---|---|---|---|---|
+| **Channel** | Email + encounter | SMS (TCPA, A2P 10DLC) | Email + studio visit | DM + broadcast | Email + SMS + support |
+| **Synthesis cadence** | Nightly | Twice-weekly | Weekly | Daily | Hourly for active segments |
+| **Safety layer** | 1+1 cap | Opt-out parsing, geo-gate | Discretion rules | Fan-tier throttling | GDPR + CCPA + unsubs |
+| **Evaluator** | N+2 reply rate | Order frequency + LTV | Acquisition + fit | Engagement + retention | LTV + NPS + churn |
+| **Voice register** | First-person artist | Concierge, warm | Curatorial, precise | Personal, intimate | Brand guidelines |
 
-The 4-layer pipeline, genome mechanism, event schema, and synthesis scaffold are reused across all three.
+The 4-layer pipeline, genome mechanism, event schema, and synthesis scaffold are reused across all five.
 
 ## Relationship to Spirit Protocol
 
