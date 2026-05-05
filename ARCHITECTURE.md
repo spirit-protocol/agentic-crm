@@ -4,9 +4,13 @@
 
 ---
 
-## A. The frame: Five Ruptures of Agent Memory
+## A. The frame: Memory Substrate + Control Plane
 
-Every agent that tries to meet the same person twice fails in the same five places. These are not model problems. They are not solved by a better LLM. They are **structural** — and they are what this repo tries to make visible and cheap to close.
+An agent that tries to meet the same person twice fails along two axes. **Memory** decides whether the agent *knows* anything — whether each touchpoint becomes durable understanding the next prompt can use. **Control plane** decides whether what the agent does with that knowledge is *bounded and reviewable* — whether retrieved insight becomes a per-recipient decision instead of an uncontrolled send. Both axes have to hold. SOLIENNE's April failure was not a memory failure; the memory substrate worked. It was a control-plane failure: the system actuated at batch scale without a reviewable per-recipient decision.
+
+### A.1 Memory substrate — the Five Ruptures
+
+Every agent that tries to meet the same person twice fails in the same five memory places. These are not model problems. They are not solved by a better LLM. They are **structural**.
 
 | # | Rupture | Question it answers |
 |---|---|---|
@@ -16,7 +20,20 @@ Every agent that tries to meet the same person twice fails in the same five plac
 | 4 | **Evaluation** | Is the system learning from landings (replies, RSVPs, purchases), not sends? |
 | 5 | **Cross-surface** | When the same person shows up on email + SMS + encounter, do the channels resolve to one identity? |
 
-If any of the five fail, the second conversation is a re-introduction. **Closing all five is the substrate.** Everything in this repo, and everything we lift into v0.2, is in service of one of those five.
+If any of the five fail, the second conversation is a re-introduction.
+
+### A.2 Control plane — actuation governance
+
+Closing the five ruptures gives the agent memory. Memory is not enough — production safety requires that every outbound is a *reviewable decision*, not a streamed action. The control plane is the layer that holds:
+
+| Surface | Question it answers |
+|---|---|
+| **Proposal envelope** | Is this outbound a typed object with intent, recipient, content, and gates declared upfront? |
+| **Gates** | Did cooldown / cap / consent / bounce / dead-man checks run, and did they pass? |
+| **Operator review** | Could a human inspect, approve, refuse, or supersede before send (without that being the bottleneck forever)? |
+| **Send ledger** | Is there a durable record of what was proposed, what was approved, what was sent, and what was refused — with reasons? |
+
+**Closing all five ruptures + holding the control plane is the substrate.** Everything in this repo, and everything we lift into v0.2, is in service of one of those two layers.
 
 ---
 
@@ -33,7 +50,7 @@ agentic-crm/
 │   ├── extract.md         # observation extraction — Rupture 1
 │   └── recall.md          # context injection at outbound — Rupture 3
 ├── safety/
-│   └── guardrails.ts      # cooldown, 1+1 cap, bounce halt, dead-man — orthogonal to ruptures
+│   └── guardrails.ts      # cooldown, 1+1 cap, bounce halt, dead-man — control-plane gates layer
 ├── examples/
 │   └── minimal-loop.ts    # ~80 lines: load → log → synthesize → generate
 ├── README.md              # framing + five-ruptures explainer
@@ -156,25 +173,28 @@ The convention captured in `spirit/conventions/compounding-intel-v1.md` (egress 
 
 ## F. What v0.2 is shaped to absorb
 
-This is a **target list**, not a commitment. Items move into v0.2 only after they have proven themselves in two impls.
+This is a **target list**, not a commitment. Items move into v0.2 only after they have proven themselves in two impls. Roughly ordered by extraction-readiness — items 1-4 are already pressure-tested in SOLIENNE production and don't force autonomy on adopters; items 5-9 require a second impl (MERIAN) to clarify their shape.
 
 1. **SurfaceContactProposalInput envelope.** SOLIENNE's typed I/O for proposals before they go to operator review. Lives in `lib/outbound/types.ts`. PR #8 adapter merged 2026-05-03 (commit `2d771eb9`). Likely first-extract target.
-2. **Status taxonomy.** The lifecycle of an outreach proposal (draft → reviewed → queued → sent → landed → evaluated). PR #8 enum is the working version.
-3. **Operator-review queue + admin UI shape.** Even a "fully autonomous" loop ships with a human-in-the-loop drawer for the first cohorts. `app/admin/outbound/page.tsx` + `app/api/outbound/list/route.ts` are the SOLIENNE shape.
-4. **Queue observability primitive.** `codex/auto-outreach-observability-guardrail` branch (local-only on M5, tests 9/0 passing, awaiting push approval) — first piece of the substrate dashboard (sub-goal 4). May land as the next merge after observability gets reviewed.
-5. **Outcome-conditioned genome mutation.** Currently hand-tuned. Codex sub-goal 2 (weeks 2-4). Not started yet. v0.2 should ship the mutator interface even if the policies are still agent-specific.
-6. **Cross-surface identity resolver (Rupture 5).** Both SOLIENNE (email + encounter) and MERIAN (Telegram + booth) need this. v0.2's biggest scope addition.
-7. **Channel adapter contract.** Resend (SOLIENNE), Twilio/A2P (GOTHAM), Telegram Bot (MERIAN). The contract — not the adapters themselves.
-8. **Safety layer extensions.** v0.1's `guardrails.ts` covers cooldown, 1+1 cap, bounce halt, dead-man. SMS adds opt-out parsing + geo-gate. Telegram adds rate limits + group-vs-DM context. v0.2's safety layer needs to be channel-aware without being channel-coupled.
+2. **Status taxonomy (proposal-state enum).** The current SOLIENNE enum is `draft | queued | claimed | sent | blocked | rejected | superseded` — that's the lifecycle of a proposal as it moves through the control plane. **Outcome states** (`landed`, `evaluated`, `replied`, etc.) are a separate axis layered on top once Rupture 4 has a defined metric. v0.2 should absorb the proposal-state enum first; outcome states wait for Codex's outcome-metric definition (sub-goal 1).
+3. **Operator-review queue + admin UI shape.** Even a "fully autonomous" loop ships with a human-in-the-loop drawer for the first cohorts. `app/admin/outbound/page.tsx` + `app/api/outbound/list/route.ts` are the SOLIENNE shape. Pressure-tested locally; doesn't force autonomy on adopters who want the queue without the loop.
+4. **Queue observability primitive.** `codex/auto-outreach-observability-guardrail` branch (local-only on M5, tests 9/0 passing, awaiting push approval) — first piece of the substrate dashboard (sub-goal 4). May land as the next merge after observability gets reviewed. Same logic as #3: pressure-tested + non-coercive.
+5. **Decision/audit envelope.** A durable record of *why* a proposal was made, *who or what* approved it, *which gates ran*, *what was refused*, and *why*. Some of this lives in #1 (envelope) and #4 (queue observability) already, but it deserves explicit naming because it is what makes operator review portable across agents — and it is the substrate Spirit's on-chain provenance layer eventually anchors to.
+6. **Outcome-conditioned mutator: interface + event requirements first, policy later.** Currently hand-tuned. Codex sub-goal 2 (weeks 2-4). v0.2 should absorb the *interface contract* (mutator signature, event vocabulary, genome-write protocol) — not the policy. Mutation policy waits for SOLIENNE + MERIAN to produce two weeks of outcome data each; extracting policy before then bakes in SOLIENNE-specific dynamics.
+7. **Cross-surface identity resolver — contract, not store (Rupture 5).** Both SOLIENNE (email + encounter) and MERIAN (Telegram + booth) need this. v0.2 ships the **resolver contract** — the typed shape of "given a contact across channel A and B, does the system see one person or two?" — not a hosted identity store. The store stays agent-side; only the contract generalizes (consistent with §G).
+8. **Channel adapter contract.** Resend (SOLIENNE), Twilio/A2P (GOTHAM), Telegram Bot (MERIAN). The contract — not the adapters themselves.
+9. **Channel-aware safety layer.** v0.1's `guardrails.ts` covers cooldown, 1+1 cap, bounce halt, dead-man. v0.2 promotes **consent / opt-out / bounce semantics** to first-class concerns alongside rate limits — every channel has them, every channel handles them differently (CAN-SPAM unsubscribe vs A2P 10DLC STOP/HELP vs Telegram block-and-leave), and the abstraction must hold all three without coupling. Channel-specific extensions (SMS opt-out parsing + geo-gate, Telegram group-vs-DM context) are extension points, not the core.
 
-**Risk Codex flagged 2026-05-05:** premature SDK abstraction while SOLIENNE is still carrying production-specific gates, venue timing, and operator-review constraints. The 2-impl-before-extraction discipline (and the post-TGE timing) is the answer to this risk.
+**Risk Codex flagged 2026-05-05:** premature SDK abstraction while SOLIENNE is still carrying production-specific gates, venue timing, and operator-review constraints. The 2-impl-before-extraction discipline (and the post-TGE timing) is the answer to this risk. Items 1-4 are most defensible against this risk because they are already pressure-tested locally; items 5-9 are explicitly held until MERIAN produces a second shape to triangulate against.
 
 ---
 
 ## G. What v0.2 is **not** shaped to absorb (yet)
 
 - **Hosted DB / queue / UI.** This stays a substrate. Each agent owns its own infra.
+- **Hosted cross-surface identity store.** The *resolver contract* lands in v0.2 (§F #7); the actual identity store — wherever the canonical `(channel, channel_id) → person_id` rows live — stays agent-side. Same discipline as DB / queue / UI: contract generalizes, store does not.
 - **Channel adapters themselves.** Adapter *contracts* land in v0.2. Concrete adapters stay agent-side until/unless three agents need the same one.
+- **Outcome mutation policy.** The *interface* lands in v0.2 (§F #6); the policy that decides which genome parameters to nudge in response to which outcomes waits for two impls' worth of data.
 - **LLM-provider abstraction.** Agents pick their own model and prompt style. Synthesis prompts in v0.1 are scaffolds, not norms.
 - **Compliance modules.** TCPA, GDPR, A2P 10DLC are vertical-shaped. The safety layer hooks them in; it does not implement them.
 
