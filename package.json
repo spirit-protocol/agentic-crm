@@ -1,5 +1,5 @@
 {
-  "name": "@spirit/auto-outreach",
+  "name": "@spirit/agentic-crm",
   "version": "0.1.0",
   "description": "The memory substrate for agents that leave the screen. Reference implementation of the five primitives every cultural AI agent needs to keep a relationship.",
   "license": "MIT",
@@ -27,7 +27,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/spirit-protocol/auto-outreach"
+    "url": "https://github.com/spirit-protocol/agentic-crm"
   },
   "author": "Spirit Protocol",
   "engines": {

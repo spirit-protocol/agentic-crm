@@ -1,4 +1,4 @@
-# Contributing to @spirit/auto-outreach
+# Contributing to @spirit/agentic-crm
 
 > If you're reading this because Seth or Lenny pointed you here: welcome. Read §A and §B first. The rest is reference.
 
@@ -16,7 +16,7 @@ If you want to change v0.1 — open an issue or PR here. If you want to change S
 
 | Where | Status | Owner |
 |---|---|---|
-| `spirit-protocol/auto-outreach` (this repo) | v0.1 scaffold — schema + prompts + safety + minimal-loop example. No persistence, no channel adapters. | Spirit |
+| `spirit-protocol/agentic-crm` (this repo) | v0.1 scaffold — schema + prompts + safety + minimal-loop example. No persistence, no channel adapters. Repo renamed from `auto-outreach` 2026-04-17 (README + framing rebranded then; package + docs caught up 2026-05-05). | Spirit |
 | `solienne-ai/lib/outreach/` + `lib/outbound/` | PRODUCTION — auto-outreach loop (`outreach/`), proposal queue/gates/ledger primitives (`outbound/`), Resend channel, SurfaceContact envelope, admin UI. PR #8 (legacy-wave SurfaceContact adapter) merged 2026-05-03 (commit `2d771eb9`). Open branch: `codex/auto-outreach-observability-guardrail` (local-only on M5, queue observability + tests 9/0, awaiting push approval). | Codex (multi-worktree swarm on M5) |
 | `solienne-ai/planning/codex-goals/goal-auto-outreach.md` | Live 8-12 week plan: outcome-conditioned mutation, monthly newsletter, substrate dashboard. **All 6 sub-goals not yet started.** Adjacent shipped: SurfaceContact queue + Fotografiska cross-cycle re-engagement (`a3f97aba`, `7b095c3d`). | Codex |
 | `solienne-ai/planning/spirit-sdk/auto-outreach-spec.md` | Draft v1 SDK spec — universal-vs-agent-specific split. **Treat as map, not current truth** (Codex 2026-05-05). | Codex (Spirit-readable) |

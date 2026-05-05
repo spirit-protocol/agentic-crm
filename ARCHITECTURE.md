@@ -1,4 +1,4 @@
-# Architecture — @spirit/auto-outreach
+# Architecture — @spirit/agentic-crm
 
 > What's in v0.1, where the production source-of-truth lives, and what v0.2 is shaped to absorb.
 
@@ -23,7 +23,7 @@ If any of the five fail, the second conversation is a re-introduction. **Closing
 ## B. v0.1 layout (what's on disk)
 
 ```
-auto-outreach/
+agentic-crm/
 ├── schema/
 │   ├── event.ts           # canonical relationship_event type — Rupture 1
 │   ├── profile.ts         # RelationshipProfile + strength score — Rupture 2
@@ -189,7 +189,7 @@ This is a **target list**, not a commitment. Items move into v0.2 only after the
 - **Opt-in genome federation** — agents in the fleet can share what's working, if they choose.
 - **Sovereignty guarantees** — the agent owns its relationship graph. It is portable across deployers.
 
-You can ship an agent on `@spirit/auto-outreach` without joining Spirit. Or you can join the fleet and inherit the coordination layer. Both paths stay open.
+You can ship an agent on `@spirit/agentic-crm` without joining Spirit. Or you can join the fleet and inherit the coordination layer. Both paths stay open.
 
 ---
 
